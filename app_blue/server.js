@@ -1,9 +1,13 @@
 const express = require('express');
 const app = express();
-const port = 8081;
 
-app.get('/version', (req, res) => {
-    res.send('Blue version 1.0.0');
+// Use hardcoded port or fallback
+const PORT = process.env.PORT || 8081;
+
+app.get('/', (req, res) => {
+  res.send(`Hello from ${PORT}`);
 });
 
-app.listen(port, () => console.log(`App Blue running on port ${port}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
