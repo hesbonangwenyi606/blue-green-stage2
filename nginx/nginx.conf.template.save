@@ -26,11 +26,9 @@ http {
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
 
-            # Forward upstream headers
             proxy_set_header X-App-Pool $upstream_http_x_app_pool;
             proxy_set_header X-Release-Id $upstream_http_x_release_id;
 
-            # Retry on failure
             proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
         }
     }

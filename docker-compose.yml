@@ -1,31 +1,20 @@
 version: "3.9"
-
 services:
   app_blue:
     build: ./app_blue
     container_name: app_blue
-    ports:
-      - "8081:8081"
-    environment:
-      - RELEASE_ID_BLUE=${RELEASE_ID_BLUE}
-      - PORT=8081
 
   app_green:
     build: ./app_green
     container_name: app_green
-    ports:
-      - "8082:8082"
-    environment:
-      - RELEASE_ID_GREEN=${RELEASE_ID_GREEN}
-      - PORT=8082
 
   nginx:
     image: nginx:1.25-alpine
     container_name: nginx
     ports:
-      - "8080:8080"
+      - "${PORT}:${PORT}"
     volumes:
-      - ./nginx/nginx.conf.template:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - app_blue
       - app_green
