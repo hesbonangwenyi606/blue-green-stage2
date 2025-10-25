@@ -1,0 +1,37 @@
+worker_processes 1;
+error_log /var/log/nginx/error.log warn;
+pid /var/run/nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    sendfile on;
+    keepalive_timeout 65;
+
+    upstream backend {
+        server app_blue:8081 max_fails=1 fail_timeout=2s;
+        server app_green:8082 backup;
+    }
+
+    server {
+        listen 8080;
+
+        location / {
+            proxy_pass http://backend;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+
+            # Forward upstream headers
+            proxy_set_header X-App-Pool $upstream_http_x_app_pool;
+            proxy_set_header X-Release-Id $upstream_http_x_release_id;
+
+            # Retry on failure
+            proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
+        }
+    }
+}

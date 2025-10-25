@@ -2,34 +2,22 @@ version: "3.9"
 
 services:
   app_blue:
-    image: ${BLUE_IMAGE}
+    build: ./app_blue
     container_name: app_blue
-    environment:
-      - RELEASE_ID=${RELEASE_ID_BLUE}
-      - APP_POOL=blue
-      - PORT=8081
     ports:
       - "8081:8081"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/healthz"]
-      interval: 5s
-      timeout: 2s
-      retries: 3
+    environment:
+      - RELEASE_ID_BLUE=${RELEASE_ID_BLUE}
+      - PORT=8081
 
   app_green:
-    image: ${GREEN_IMAGE}
+    build: ./app_green
     container_name: app_green
-    environment:
-      - RELEASE_ID=${RELEASE_ID_GREEN}
-      - APP_POOL=green
-      - PORT=8082
     ports:
       - "8082:8082"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/healthz"]
-      interval: 5s
-      timeout: 2s
-      retries: 3
+    environment:
+      - RELEASE_ID_GREEN=${RELEASE_ID_GREEN}
+      - PORT=8082
 
   nginx:
     image: nginx:1.25-alpine
